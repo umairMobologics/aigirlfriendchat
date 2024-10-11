@@ -1,0 +1,130 @@
+{
+  "project_info": {
+    "project_number": "244431628192",
+    "firebase_url": "https://livetalkagora-default-rtdb.firebaseio.com",
+    "project_id": "livetalkagora",
+    "storage_bucket": "livetalkagora.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244431628192:android:04e2129e0269a2ee8466c5",
+        "android_client_info": {
+          "package_name": "com.example.livetalkagora"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244431628192-273jiha8jj46je2ec0d4ku88k08fb01s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.livetalkagora",
+            "certificate_hash": "0d87bc2f9bce886ff55c44c0288811bfa1c05ef8"
+          }
+        },
+        {
+          "client_id": "244431628192-imp7j1ofbc1a8itvm43uc1a846gsrgpa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7cxZftCUlV9uF7TWmboc3oK2XTCyjb6s"
+        },
+        {
+          "current_key": "AIzaSyBWRZMd4oLgDGR9mBPxTBMWUx7L7mX7dtc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "244431628192-imp7j1ofbc1a8itvm43uc1a846gsrgpa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "244431628192-9j580rrla7ubv1t4q48f4o3nplfo7oq9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.llk.randomvideochat"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244431628192:android:76a8aef5f6bf686d8466c5",
+        "android_client_info": {
+          "package_name": "com.livetalk.randomvideochat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244431628192-95o0idfh4nqsn5797l13dumnk2dppsfv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.livetalk.randomvideochat",
+            "certificate_hash": "33fd2222a9af69c12a4ada55b64928a0e4712acd"
+          }
+        },
+        {
+          "client_id": "244431628192-pkeklrsgthde8dct6fk17cv8s0694ch9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.livetalk.randomvideochat",
+            "certificate_hash": "29114441774d0ed655df1ca20ed59afd6bd867f3"
+          }
+        },
+        {
+          "client_id": "244431628192-s4slts6ilic20pevv7lup35dfct3qkh8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.livetalk.randomvideochat",
+            "certificate_hash": "28d6da45612589226d4a44319337d4610627456e"
+          }
+        },
+        {
+          "client_id": "244431628192-v1bcsd9v1r8ts9k374cn0mhei8mj5srs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.livetalk.randomvideochat",
+            "certificate_hash": "543ccbf5197d81f7a2289a3840a514ed925507f7"
+          }
+        },
+        {
+          "client_id": "244431628192-imp7j1ofbc1a8itvm43uc1a846gsrgpa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7cxZftCUlV9uF7TWmboc3oK2XTCyjb6s"
+        },
+        {
+          "current_key": "AIzaSyBWRZMd4oLgDGR9mBPxTBMWUx7L7mX7dtc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "244431628192-imp7j1ofbc1a8itvm43uc1a846gsrgpa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "244431628192-9j580rrla7ubv1t4q48f4o3nplfo7oq9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.llk.randomvideochat"
+              }
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-9800935656438737~7896049855"
+    }
+  ],
+  "configuration_version": "1"
+}
