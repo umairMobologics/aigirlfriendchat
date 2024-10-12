@@ -24,3 +24,17 @@ class SaveMessagesModel extends HiveObject {
     this.time,
   });
 }
+
+@HiveType(typeId: 1)
+class Conversation extends HiveObject {
+  @HiveField(0)
+  String conversationID;
+
+  @HiveField(1)
+  List<SaveMessagesModel> messages;
+
+  Conversation({
+    required this.conversationID,
+    required this.messages,
+  });
+}

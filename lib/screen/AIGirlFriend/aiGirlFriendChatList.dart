@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agora_new_updated/Database/listGirlfriendDatabase.dart';
 import 'package:agora_new_updated/models/GirlFriendModel.dart';
 import 'package:agora_new_updated/screen/AIGirlFriend/ChatScreen/ChatScreen.dart';
@@ -86,6 +88,8 @@ class _AIGirlFriendState extends State<AIGirlFriend> {
               itemCount: girlfriends.length,
               itemBuilder: (context, index) {
                 final girlfriend = girlfriends[index];
+                log("girlfriend id is : ${girlfriend.girlFriendName}");
+
                 return MessageCard(
                     mq: mq, index: index, girlfriend: girlfriend);
               },

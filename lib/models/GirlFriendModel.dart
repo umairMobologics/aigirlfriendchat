@@ -10,6 +10,8 @@ class GirlFriend {
   final int girlFriendAge;
   final String girlFriendPersonality;
 
+  String? id; // Primary ID for read purposes
+
   GirlFriend({
     required this.userName,
     required this.userGender,
@@ -20,9 +22,10 @@ class GirlFriend {
     required this.girlFriendGender,
     required this.girlFriendAge,
     required this.girlFriendPersonality,
+    this.id, // Optional, can be null during creation and assigned later
   });
 
-  // Convert a User object into a Map object
+  // Convert a GirlFriend object into a Map object
   Map<String, dynamic> toMap() {
     return {
       'userName': userName,
@@ -37,8 +40,8 @@ class GirlFriend {
     };
   }
 
-  // Extract a User object from a Map object
-  factory GirlFriend.fromMap(Map<String, dynamic> map) {
+  // Extract a GirlFriend object from a Map object
+  factory GirlFriend.fromMap(Map<String, dynamic> map, {String? id}) {
     return GirlFriend(
       userName: map['userName'],
       userGender: map['userGender'],
@@ -50,6 +53,7 @@ class GirlFriend {
       girlFriendGender: map['girlFriendGender'],
       girlFriendAge: map['girlFriendAge'],
       girlFriendPersonality: map['girlFriendPersonality'],
+      id: id, // Assigning the ID if provided
     );
   }
 }

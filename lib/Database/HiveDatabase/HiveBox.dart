@@ -6,5 +6,6 @@ class HiveBox {
 
   static Future<void> initHive() async {
     await Hive.openBox<SaveMessagesModel>(message);
+    await Hive.openBox<Conversation>("conversations");
   }
 }

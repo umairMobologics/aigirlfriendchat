@@ -1,20 +1,23 @@
+import 'package:agora_new_updated/Database/HiveDatabase/SaveMessagesService.dart';
+import 'package:agora_new_updated/models/MessageModel.dart';
 import 'package:flutter/material.dart';
 
 class ChatProvider extends ChangeNotifier {
-  // List to store the messages
-  final List<Map<String, dynamic>> _messages = [];
+  //save message object
+  SaveMessagesModel messageObject(
+      String sender, String message, bool isSender, String time) {
+    return SaveMessageService.saveMessageObject(
+        sender, message, isSender, time);
+  }
 
-  // Getter to access the messages
-  List<Map<String, dynamic>> get messages => _messages;
+  ///save conversation to hive
+  void saveMessageConversation(
+      SaveMessagesModel message, String converdationID) {
+    SaveMessageService.saveConversation(message, converdationID);
+  }
 
-  // Method to add a message
-  void addMessage(String sender, String message, bool isSender, String time) {
-    _messages.add({
-      'sender': sender,
-      'message': message,
-      'isSender': isSender,
-      'time': time,
-    });
-    notifyListeners(); // Notify listeners to rebuild the UI
+  //clear specific conversation
+  void clearConversation(String converdationID) {
+    SaveMessageService.clearConversation(converdationID);
   }
 }

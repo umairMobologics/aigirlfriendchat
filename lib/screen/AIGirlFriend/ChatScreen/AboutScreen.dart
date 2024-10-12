@@ -1,13 +1,20 @@
 import 'package:agora_new_updated/models/GirlFriendModel.dart';
+import 'package:agora_new_updated/screen/AIGirlFriend/Controller/CharScreenController.dart';
 import 'package:agora_new_updated/utils/alert_dialogs.dart';
 import 'package:agora_new_updated/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class Aboutscreen extends StatelessWidget {
+class Aboutscreen extends StatefulWidget {
   final GirlFriend girlfriend;
   const Aboutscreen({super.key, required this.girlfriend});
 
+  @override
+  State<Aboutscreen> createState() => _AboutscreenState();
+}
+
+class _AboutscreenState extends State<Aboutscreen> {
   @override
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
@@ -42,18 +49,18 @@ class Aboutscreen extends StatelessWidget {
               },
               child: CircleAvatar(
                 maxRadius: 80,
-                backgroundImage: AssetImage(girlfriend.girlFriendImage),
+                backgroundImage: AssetImage(widget.girlfriend.girlFriendImage),
               ),
             ),
             SizedBox(height: mq.height * 0.02),
             Text(
-              girlfriend.girlFriendName.toUpperCase(),
+              widget.girlfriend.girlFriendName.toUpperCase(),
               style: const TextStyle(
                   color: white, fontWeight: FontWeight.bold, fontSize: 20),
             ),
             SizedBox(height: mq.height * 0.01),
             Text(
-              "${girlfriend.girlFriendAge.toString().toUpperCase()} yr - ${girlfriend.girlFriendGender} ",
+              "${widget.girlfriend.girlFriendAge.toString().toUpperCase()} yr - ${widget.girlfriend.girlFriendGender} ",
               style: const TextStyle(color: white54, fontSize: 18),
             ),
             SizedBox(height: mq.height * 0.02),
@@ -69,8 +76,10 @@ class Aboutscreen extends StatelessWidget {
                         "Clear chat history and make a fresh start with the character.",
                         () {
                           // log("Cleared");
-                          // Navigator.pop(context);
-                          // Navigator.pop(context);
+                          context.read<ChatProvider>().clearConversation(
+                              widget.girlfriend.girlFriendName);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
                         },
                       );
                     },

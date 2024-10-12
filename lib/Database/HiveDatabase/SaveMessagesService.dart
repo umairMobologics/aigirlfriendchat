@@ -1,4 +1,3 @@
-import 'package:agora_new_updated/Database/HiveDatabase/HiveBox.dart';
 import 'package:agora_new_updated/models/MessageModel.dart';
 import 'package:hive/hive.dart';
 
@@ -11,26 +10,53 @@ class SaveMessageService {
     _instance ??= SaveMessageService._internal();
     return _instance!;
   }
+  static SaveMessagesModel saveMessageObject(
+      String sender, String message, bool isSender, String time) {
+    return SaveMessagesModel(
+        sender: sender, message: message, isSender: isSender, time: time);
+  }
 
-  /// for getting all data
-  static Box<SaveMessagesModel> getAllmessages() =>
-      Hive.box<SaveMessagesModel>(HiveBox.message);
+  static saveConversation(SaveMessagesModel message, String converdationID) {
+    final box = Hive.box<Conversation>('conversations');
+    Conversation? conversation = box.get(converdationID);
 
-  /// Function that will add items in shopping cart
-  static addMessage({
-    required String sender,
-    required String message,
-    required bool isSender,
-    required String time,
-  }) {
-    SaveMessagesModel data = SaveMessagesModel(
-      sender: sender,
-      message: message,
-      isSender: isSender,
-      time: time,
-    );
-    final box = getAllmessages();
-    box.add(data);
-    data.save();
+    if (conversation != null) {
+      // Add the new message to the existing list of messages
+      final updatedMessages =
+          List<SaveMessagesModel>.from(conversation.messages);
+      updatedMessages.add(message);
+      // Make a copy of currentMessages before adding to avoid concurrent modification
+      // conversation.save();
+      box.put(
+          converdationID,
+          Conversation(
+              conversationID: converdationID, messages: updatedMessages));
+    } else {
+      // Create a new conversation and save it
+      box.put(
+        converdationID,
+        Conversation(
+          conversationID: converdationID,
+          messages: [message], // Create a new list to avoid future issues
+        ),
+      );
+    }
+  }
+
+  //clear specific conversation
+  static clearConversation(String converdationID) {
+    final box = Hive.box<Conversation>('conversations');
+    Conversation? conversation = box.get(converdationID);
+
+    if (conversation != null) {
+      // Clear the messages in the existing conversation
+      box.put(
+        converdationID,
+        Conversation(
+          conversationID: conversation.conversationID,
+          messages: [], // Set messages to an empty list
+        ),
+      );
+    }
   }
 }

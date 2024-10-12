@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:agora_new_updated/Database/HiveDatabase/SaveMessagesService.dart';
 import 'package:agora_new_updated/models/GirlFriendModel.dart';
 import 'package:agora_new_updated/models/MessageModel.dart';
 import 'package:agora_new_updated/screen/AIGirlFriend/ChatScreen/AboutScreen.dart';
@@ -54,27 +51,35 @@ class ChatScreenBody extends StatefulWidget {
 }
 
 class _ChatScreenBodyState extends State<ChatScreenBody> {
-  final TextEditingController controller = TextEditingController();
+  // final TextEditingController controller = TextEditingController();
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // WidgetsBinding.instance.addPostFrameCallback(
+  //   //   (timeStamp) {
+  //   //     final dataProvider = Provider.of<ChatProvider>(context, listen: false);
+
+  //   //     if (dataProvider.messages.isEmpty) {
+  //   //       dataProvider.addMessage(
+  //   //         "Umair", // The sender
+  //   //         "Hi, it's ${widget.girlfriend.girlFriendName}. I'm super excited to chat! What's up? How's your day going?", // Use girlfriend's name
+  //   //         false, // Assuming it's sent by Umair (you)
+  //   //         TimeOfDay.now().format(context), // The time
+  //   //       );
+  //   //     } else {
+  //   //       log("old chat");
+  //   //     }
+  //   //   },
+  //   // );
+  // }
+
+  final TextEditingController _messageController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
-        final dataProvider = Provider.of<ChatProvider>(context, listen: false);
-
-        if (dataProvider.messages.isEmpty) {
-          dataProvider.addMessage(
-            "Umair", // The sender
-            "Hi, it's ${widget.girlfriend.girlFriendName}. I'm super excited to chat! What's up? How's your day going?", // Use girlfriend's name
-            false, // Assuming it's sent by Umair (you)
-            TimeOfDay.now().format(context), // The time
-          );
-        } else {
-          log("old chat");
-        }
-      },
-    );
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,16 +90,21 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
     return Column(
       children: [
         appBarWidget(mq, context),
-        ValueListenableBuilder<Box<SaveMessagesModel>>(
-            valueListenable: SaveMessageService.getAllmessages().listenable(),
+        ValueListenableBuilder<Box<Conversation>>(
+            valueListenable:
+                Hive.box<Conversation>('conversations').listenable(),
             builder: (context, box, _) {
-              final data = box.values.toList().cast<SaveMessagesModel>();
+              final data = box.get(widget.girlfriend.girlFriendName);
+              // final data = box.values.toList().cast<Conversation>();
+              // final messages = data[0].messages;
+
               return Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemCount: data.length, // Use the messages from provider
+                  itemCount:
+                      data!.messages.length, // Use the messages from provider
                   itemBuilder: (context, index) {
-                    final message = data[index];
+                    final message = data.messages[index];
                     return _buildChatBubble(
                       message.sender!,
                       message.message!,
@@ -120,7 +130,7 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
         children: [
           Expanded(
             child: TextField(
-              controller: controller,
+              controller: _messageController,
               decoration: InputDecoration(
                 hintText: "Type your message...",
                 border: OutlineInputBorder(
@@ -135,14 +145,16 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
             icon: const Icon(Icons.send, color: Colors.blue),
             onPressed: () {
               // Add the new message
-              if (controller.text.isNotEmpty) {
-                chatProvider.addMessage(
-                  "Umair", // The sender
-                  controller.text, // The message content
+              if (_messageController.text.isNotEmpty) {
+                var message = chatProvider.messageObject(
+                  widget.girlfriend.userName, // The sender
+                  _messageController.text, // The message content
                   false, // Assuming it's sent by Umair (you)
                   TimeOfDay.now().format(context), // The time
                 );
-                controller.clear(); // Clear the input field
+                chatProvider.saveMessageConversation(
+                    message, widget.girlfriend.girlFriendName);
+                _messageController.clear(); // Clear the input field
               }
             },
           ),

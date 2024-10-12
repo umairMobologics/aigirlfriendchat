@@ -30,6 +30,7 @@ void main() async {
   //init hive
   await Hive.initFlutter();
   Hive.registerAdapter(SaveMessagesModelAdapter());
+  Hive.registerAdapter(ConversationAdapter());
 
   await HiveBox.initHive();
 
