@@ -1,11 +1,40 @@
 import 'dart:developer';
 
+import 'package:agora_new_updated/API/apiResponse.dart';
 import 'package:agora_new_updated/Database/HiveDatabase/SaveMessagesService.dart';
 import 'package:agora_new_updated/Database/listGirlfriendDatabase.dart';
 import 'package:agora_new_updated/models/MessageModel.dart';
 import 'package:flutter/material.dart';
 
 class ChatProvider extends ChangeNotifier {
+  bool isloading = false;
+  //send response to ai
+  Future<void> askQuestion(
+      BuildContext context, String text, String converdationID) async {
+    isloading = true;
+    notifyListeners();
+    if (text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Message cannot be empty'),
+        ),
+      );
+      return;
+    }
+    String finalText = text;
+
+    final res = await APIs.makeGeminiRequest(finalText);
+    if (res.isNotEmpty) {
+      var aimsg =
+          messageObject("Bot", res, true, TimeOfDay.now().format(context));
+      saveMessageConversation(aimsg, converdationID);
+    } else {
+      log("invalid response");
+    }
+    isloading = false;
+    notifyListeners();
+  }
+
   //save message object
   SaveMessagesModel messageObject(
       String sender, String message, bool isSender, String time) {

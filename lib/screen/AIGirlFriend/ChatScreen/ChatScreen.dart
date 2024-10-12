@@ -145,6 +145,9 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
                 );
                 chatProvider.saveMessageConversation(
                     message, widget.girlfriend.conversationID);
+                chatProvider.askQuestion(context, _messageController.text,
+                    widget.girlfriend.conversationID);
+
                 _messageController.clear(); // Clear the input field
               }
             },
@@ -212,9 +215,11 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
                       widget.girlfriend.girlFriendName,
                       style: const TextStyle(color: white, fontSize: 16),
                     ),
-                    const Text(
-                      "Tap for more info",
-                      style: TextStyle(color: white54, fontSize: 14),
+                    Consumer<ChatProvider>(
+                      builder: (context, value, child) => Text(
+                        value.isloading ? "typing..." : "Tap for more info",
+                        style: const TextStyle(color: white54, fontSize: 14),
+                      ),
                     )
                   ],
                 ),
