@@ -51,29 +51,6 @@ class ChatScreenBody extends StatefulWidget {
 }
 
 class _ChatScreenBodyState extends State<ChatScreenBody> {
-  // final TextEditingController controller = TextEditingController();
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // WidgetsBinding.instance.addPostFrameCallback(
-  //   //   (timeStamp) {
-  //   //     final dataProvider = Provider.of<ChatProvider>(context, listen: false);
-
-  //   //     if (dataProvider.messages.isEmpty) {
-  //   //       dataProvider.addMessage(
-  //   //         "Umair", // The sender
-  //   //         "Hi, it's ${widget.girlfriend.girlFriendName}. I'm super excited to chat! What's up? How's your day going?", // Use girlfriend's name
-  //   //         false, // Assuming it's sent by Umair (you)
-  //   //         TimeOfDay.now().format(context), // The time
-  //   //       );
-  //   //     } else {
-  //   //       log("old chat");
-  //   //     }
-  //   //   },
-  //   // );
-  // }
-
   final TextEditingController _messageController = TextEditingController();
 
   @override
@@ -87,36 +64,48 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
     var mq = MediaQuery.of(context).size;
     // var chatProvider = Provider.of<ChatProvider>(context); // Get the provider
 
-    return Column(
-      children: [
-        appBarWidget(mq, context),
-        ValueListenableBuilder<Box<Conversation>>(
-            valueListenable:
-                Hive.box<Conversation>('conversations').listenable(),
-            builder: (context, box, _) {
-              final data = box.get(widget.girlfriend.girlFriendName);
-              // final data = box.values.toList().cast<Conversation>();
-              // final messages = data[0].messages;
-
-              return Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemCount:
-                      data!.messages.length, // Use the messages from provider
-                  itemBuilder: (context, index) {
-                    final message = data.messages[index];
-                    return _buildChatBubble(
-                      message.sender!,
-                      message.message!,
-                      message.isSender!,
-                      message.time!,
-                    );
-                  },
-                ),
-              );
-            }),
-        _buildMessageInputField(context), // Pass context for provider access
-      ],
+    return SafeArea(
+      child: Column(
+        children: [
+          appBarWidget(mq, context),
+          ValueListenableBuilder<Box<Conversation>>(
+              valueListenable:
+                  Hive.box<Conversation>('conversations').listenable(),
+              builder: (context, box, _) {
+                final data = box.get(widget.girlfriend.conversationID);
+                // final data = box.values.toList().cast<Conversation>();
+                // final messages = data[0].messages;
+                if (data == null || data.messages.isEmpty) {
+                  var firstmsg = context.read<ChatProvider>().messageObject(
+                      "bot",
+                      "Hi How are you doing today?",
+                      true,
+                      TimeOfDay.now().format(context));
+                  context.read<ChatProvider>().saveMessageConversation(
+                      firstmsg, widget.girlfriend.conversationID);
+                  return const Expanded(child: SizedBox());
+                } else {
+                  return Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(10),
+                      itemCount: data
+                          .messages.length, // Use the messages from provider
+                      itemBuilder: (context, index) {
+                        final message = data.messages[index];
+                        return _buildChatBubble(
+                          message.sender!,
+                          message.message!,
+                          message.isSender!,
+                          message.time!,
+                        );
+                      },
+                    ),
+                  );
+                }
+              }),
+          _buildMessageInputField(context), // Pass context for provider access
+        ],
+      ),
     );
   }
 
@@ -132,7 +121,9 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
             child: TextField(
               controller: _messageController,
               decoration: InputDecoration(
+                fillColor: black.withOpacity(0.5),
                 hintText: "Type your message...",
+                hintStyle: const TextStyle(color: white),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -153,7 +144,7 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
                   TimeOfDay.now().format(context), // The time
                 );
                 chatProvider.saveMessageConversation(
-                    message, widget.girlfriend.girlFriendName);
+                    message, widget.girlfriend.conversationID);
                 _messageController.clear(); // Clear the input field
               }
             },
@@ -164,97 +155,95 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
   }
 
   Widget appBarWidget(Size mq, BuildContext context) {
-    return SafeArea(
-      child: Container(
-        // height: 150,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
-        color: black.withOpacity(0.2),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+    return Container(
+      // height: 150,
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+      color: black.withOpacity(0.5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        color: grey.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(100)),
+                    child: const Center(
+                        child: Icon(Icons.arrow_back, color: white))),
+              ),
+              SizedBox(
+                width: mq.width * 0.03,
+              ),
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: AssetImage(widget.girlfriend.girlFriendImage),
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              SizedBox(
+                width: mq.width * 0.02,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            Aboutscreen(girlfriend: widget.girlfriend),
+                      ));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.girlfriend.girlFriendName,
+                      style: const TextStyle(color: white, fontSize: 16),
+                    ),
+                    const Text(
+                      "Tap for more info",
+                      style: TextStyle(color: white54, fontSize: 14),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white54)),
+            child: const Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          color: grey.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(100)),
-                      child: const Center(
-                          child: Icon(Icons.arrow_back, color: white))),
+                Icon(
+                  Icons.star,
+                  color: white,
                 ),
                 SizedBox(
-                  width: mq.width * 0.03,
+                  width: 5,
                 ),
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: AssetImage(widget.girlfriend.girlFriendImage),
-                        fit: BoxFit.cover,
-                      )),
-                ),
-                SizedBox(
-                  width: mq.width * 0.02,
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              Aboutscreen(girlfriend: widget.girlfriend),
-                        ));
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        widget.girlfriend.girlFriendName,
-                        style: const TextStyle(color: white, fontSize: 16),
-                      ),
-                      const Text(
-                        "Tap for more info",
-                        style: TextStyle(color: white54, fontSize: 14),
-                      )
-                    ],
-                  ),
+                Text(
+                  "PRO",
+                  style: TextStyle(color: white, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white54)),
-              child: const Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.star,
-                    color: white,
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text(
-                    "PRO",
-                    style: TextStyle(color: white, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

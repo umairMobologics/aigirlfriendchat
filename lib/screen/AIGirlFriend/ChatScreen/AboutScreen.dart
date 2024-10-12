@@ -1,5 +1,6 @@
 import 'package:agora_new_updated/models/GirlFriendModel.dart';
 import 'package:agora_new_updated/screen/AIGirlFriend/Controller/CharScreenController.dart';
+import 'package:agora_new_updated/screen/AIGirlFriend/aiGirlFriendChatList.dart';
 import 'package:agora_new_updated/utils/alert_dialogs.dart';
 import 'package:agora_new_updated/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -77,7 +78,7 @@ class _AboutscreenState extends State<Aboutscreen> {
                         () {
                           // log("Cleared");
                           context.read<ChatProvider>().clearConversation(
-                              widget.girlfriend.girlFriendName);
+                              widget.girlfriend.conversationID);
                           Navigator.pop(context);
                           Navigator.pop(context);
                         },
@@ -110,9 +111,15 @@ class _AboutscreenState extends State<Aboutscreen> {
                     onTap: () {
                       showClearChatDialog(context, "Are you sure?",
                           "The character will be deleted permanently", () {
-                        // log("Cleared");
-                        // Navigator.pop(context);
-                        // Navigator.pop(context);
+                        context.read<ChatProvider>().deleteConversation(
+                            widget.girlfriend.conversationID);
+                        context
+                            .read<ChatProvider>()
+                            .deleteGirlfriend(widget.girlfriend.conversationID);
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => const AIGirlFriend()),
+                            (Route<dynamic> route) => false);
                       }, yes: "Delete Character");
                     },
                     child: Container(

@@ -9,10 +9,12 @@ class GirlFriend {
   final String girlFriendGender;
   final int girlFriendAge;
   final String girlFriendPersonality;
+  final String conversationID;
 
   String? id; // Primary ID for read purposes
 
   GirlFriend({
+    required this.conversationID,
     required this.userName,
     required this.userGender,
     required this.dob,
@@ -37,6 +39,7 @@ class GirlFriend {
       'girlFriendGender': girlFriendGender,
       'girlFriendAge': girlFriendAge,
       'girlFriendPersonality': girlFriendPersonality,
+      'conversationID': conversationID
     };
   }
 
@@ -53,6 +56,7 @@ class GirlFriend {
       girlFriendGender: map['girlFriendGender'],
       girlFriendAge: map['girlFriendAge'],
       girlFriendPersonality: map['girlFriendPersonality'],
+      conversationID: map['conversationID'],
       id: id, // Assigning the ID if provided
     );
   }

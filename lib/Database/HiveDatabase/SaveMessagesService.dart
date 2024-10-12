@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agora_new_updated/models/MessageModel.dart';
 import 'package:hive/hive.dart';
 
@@ -57,6 +59,18 @@ class SaveMessageService {
           messages: [], // Set messages to an empty list
         ),
       );
+    }
+  }
+
+  //clear specific conversation
+  static deleteConversation(String converdationID) {
+    final box = Hive.box<Conversation>('conversations');
+    Conversation? conversation = box.get(converdationID);
+
+    if (conversation != null) {
+      // Clear the messages in the existing conversation
+      box.delete(converdationID);
+      log("converastion deleted: ");
     }
   }
 }

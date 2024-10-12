@@ -76,11 +76,15 @@ class _AIGirlFriendState extends State<AIGirlFriend> {
               style: const TextStyle(color: white),
             ));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-                child: Text(
-              "No girlfriends found.",
-              style: TextStyle(color: white),
-            ));
+            return const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Center(
+                  child: Text(
+                textAlign: TextAlign.center,
+                "Hurry up, Start new chat and talk with you friend",
+                style: TextStyle(color: white),
+              )),
+            );
           } else {
             final girlfriends = snapshot.data!.reversed.toList();
             return ListView.builder(
@@ -88,7 +92,7 @@ class _AIGirlFriendState extends State<AIGirlFriend> {
               itemCount: girlfriends.length,
               itemBuilder: (context, index) {
                 final girlfriend = girlfriends[index];
-                log("girlfriend id is : ${girlfriend.girlFriendName}");
+                log("girlfriend id is : ${girlfriend.conversationID}");
 
                 return MessageCard(
                     mq: mq, index: index, girlfriend: girlfriend);

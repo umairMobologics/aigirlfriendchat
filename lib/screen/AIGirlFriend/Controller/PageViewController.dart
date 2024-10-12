@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:agora_new_updated/Database/listGirlfriendDatabase.dart';
 import 'package:agora_new_updated/models/GirlFriendModel.dart';
+import 'package:agora_new_updated/utils/conversationID.dart';
 import 'package:flutter/material.dart';
 
 class PageViewController extends ChangeNotifier {
@@ -85,17 +86,19 @@ class PageViewController extends ChangeNotifier {
 
   //save girlfriend
   Future<void> saveGirlfriend() async {
+    String conversationId = girlFriendName + generateUniqueString();
+    log("iD **** $conversationId");
     GirlFriend newGirlfriend = GirlFriend(
-      userName: userName,
-      userGender: userGender,
-      dob: dob,
-      interests: intrests,
-      girlFriendImage: girlFriendImage,
-      girlFriendName: girlFriendName,
-      girlFriendGender: girlFriendGender,
-      girlFriendAge: girlFriendAge,
-      girlFriendPersonality: girlFriendPersonality,
-    );
+        userName: userName,
+        userGender: userGender,
+        dob: dob,
+        interests: intrests,
+        girlFriendImage: girlFriendImage,
+        girlFriendName: girlFriendName,
+        girlFriendGender: girlFriendGender,
+        girlFriendAge: girlFriendAge,
+        girlFriendPersonality: girlFriendPersonality,
+        conversationID: conversationId);
 
     // Save the new girlfriend to the database
     await GirlfriendDatabaseHelper().insertGirlfriend(newGirlfriend);

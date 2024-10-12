@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:agora_new_updated/screen/AIGirlFriend/Controller/PageViewController.dart';
 import 'package:agora_new_updated/screen/AIGirlFriend/Widgets/CustomButton.dart';
 import 'package:agora_new_updated/screen/AIGirlFriend/aiGirlFriendChatList.dart';
@@ -21,6 +19,12 @@ class SetUpGirlFriendName extends StatefulWidget {
 }
 
 class _SetUpGirlFriendNameState extends State<SetUpGirlFriendName> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   // Track the currently selected index (default is 0)
   int selectedIndex = 0;
   TextEditingController controller = TextEditingController();
@@ -110,12 +114,11 @@ class _SetUpGirlFriendNameState extends State<SetUpGirlFriendName> {
                             autofocus: true,
                             onSubmitted: (value) {
                               controller.text = value;
-                              log(controller.text);
+
                               FocusScope.of(context).requestFocus(FocusNode());
                             },
                             onChanged: (value) {
                               controller.text = value;
-                              log(controller.text);
                             },
                             cursorColor: white,
                             controller: controller,
@@ -390,7 +393,7 @@ class _GirlFriendAgeState extends State<GirlFriendAge> {
                             setState(() {
                               selectedAge = ageList[index];
                             });
-                            log("selected ager is now : $selectedAge");
+                            print("selected ager is now : $selectedAge");
                           },
                           children: ageList
                               .map((age) => Center(
@@ -586,11 +589,11 @@ class _GirlFriendPersonalityState extends State<GirlFriendPersonality> {
                   //dave data
                   // Save the girlfriend data to the database
                   await value.saveGirlfriend();
-                  Navigator.pushReplacement(
-                      context,
+
+                  Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
-                        builder: (context) => const AIGirlFriend(),
-                      ));
+                          builder: (context) => const AIGirlFriend()),
+                      (Route<dynamic> route) => false);
                 } else {}
               },
               child: value.girlFriendPersonality.isNotEmpty

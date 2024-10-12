@@ -35,7 +35,8 @@ class GirlfriendDatabaseHelper {
             girlFriendName TEXT,
             girlFriendGender TEXT,
             girlFriendAge INTEGER,
-            girlFriendPersonality TEXT
+            girlFriendPersonality TEXT,
+            conversationID TEXT
           )
           ''',
         );
@@ -59,6 +60,16 @@ class GirlfriendDatabaseHelper {
     return List.generate(maps.length, (i) {
       return GirlFriend.fromMap(maps[i]);
     });
+  }
+
+  // Method to delete a girlfriend by name or id
+  Future<int> deleteGirlfriendByName(String conversationID) async {
+    Database? db = await database;
+    return await db.delete(
+      'girlfriend',
+      where: 'conversationID = ?',
+      whereArgs: [conversationID],
+    );
   }
 
   Future<void> deleteGirlfriend(int id) async {
