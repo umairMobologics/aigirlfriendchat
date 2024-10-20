@@ -1,4 +1,4 @@
-import 'package:agora_new_updated/screen/bottomNavBar/bottomNavBAr.dart';
+import 'package:agora_new_updated/screen/ConnectNowScreen/bottomNavBar/bottomNavBAr.dart';
 import 'package:agora_new_updated/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Scaffold(
                       backgroundColor: white,
                       body: Center(
-                        child: LoadingAnimationWidget.prograssiveDots(
+                        child: LoadingAnimationWidget.progressiveDots(
                           size: 50.r,
                           color: primaryColor,
                         ),
@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           return Scaffold(
                             backgroundColor: white,
                             body: Center(
-                              child: LoadingAnimationWidget.prograssiveDots(
+                              child: LoadingAnimationWidget.progressiveDots(
                                 size: 50.r,
                                 color: primaryColor,
                               ),
@@ -137,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     backgroundColor: white,
                                     body: Center(
                                       child: LoadingAnimationWidget
-                                          .prograssiveDots(
+                                          .progressiveDots(
                                         size: 50.r,
                                         color: primaryColor,
                                       ),

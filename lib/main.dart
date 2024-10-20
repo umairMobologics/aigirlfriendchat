@@ -8,10 +8,10 @@ import 'package:agora_new_updated/models/MessageModel.dart';
 import 'package:agora_new_updated/provider/AdsProvider.dart';
 import 'package:agora_new_updated/provider/universal_provider.dart';
 import 'package:agora_new_updated/screen/AIGirlFriend/Controller/CharScreenController.dart';
-import 'package:agora_new_updated/screen/AIGirlFriend/aiGirlFriendChatList.dart';
 import 'package:agora_new_updated/screen/Authentication/apple_sign_in.dart';
 import 'package:agora_new_updated/screen/Authentication/emailPassword_signin_auth_provider.dart';
 import 'package:agora_new_updated/screen/Authentication/google_signin_provider.dart';
+import 'package:agora_new_updated/screen/Splash/splash_screen.dart';
 import 'package:agora_new_updated/utils/constants.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -101,7 +101,7 @@ class MyApp extends StatelessWidget {
             child: child!,
           );
         },
-        home: const AIGirlFriend(),
+        home: const SplashScreen(),
       ),
     );
   }

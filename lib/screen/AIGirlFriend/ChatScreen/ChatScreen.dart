@@ -2,6 +2,7 @@ import 'package:agora_new_updated/models/GirlFriendModel.dart';
 import 'package:agora_new_updated/models/MessageModel.dart';
 import 'package:agora_new_updated/screen/AIGirlFriend/ChatScreen/AboutScreen.dart';
 import 'package:agora_new_updated/screen/AIGirlFriend/Controller/CharScreenController.dart';
+import 'package:agora_new_updated/utils/alert_dialogs.dart';
 import 'package:agora_new_updated/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -22,17 +23,21 @@ class Chatscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: scaffoldBackground,
-      body: Container(
-        height: mq.height,
-        width: mq.width,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(girlfriend.girlFriendImage),
-                fit: BoxFit.cover)),
-        child: ChatScreenBody(
-            girlfriend: girlfriend), // Pass the girlfriend data here
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        // backgroundColor: scaffoldBackground,
+        backgroundColor: scaffoldBackground,
+        body: Container(
+          height: mq.height,
+          width: mq.width,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(girlfriend.girlFriendImage),
+                  fit: BoxFit.cover)),
+          child: ChatScreenBody(
+              girlfriend: girlfriend), // Pass the girlfriend data here
+        ),
       ),
     );
   }
@@ -54,6 +59,17 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
   final TextEditingController _messageController = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        context.read<ChatProvider>().scrollToBottom();
+      },
+    );
+  }
+
+  @override
   void dispose() {
     _messageController.dispose();
     super.dispose();
@@ -64,7 +80,10 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
     var mq = MediaQuery.of(context).size;
     // var chatProvider = Provider.of<ChatProvider>(context); // Get the provider
 
-    return SafeArea(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
       child: Column(
         children: [
           appBarWidget(mq, context),
@@ -76,17 +95,21 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
                 // final data = box.values.toList().cast<Conversation>();
                 // final messages = data[0].messages;
                 if (data == null || data.messages.isEmpty) {
-                  var firstmsg = context.read<ChatProvider>().messageObject(
-                      "bot",
-                      "Hi How are you doing today?",
-                      true,
-                      TimeOfDay.now().format(context));
-                  context.read<ChatProvider>().saveMessageConversation(
+                  var messageObj = context.read<ChatProvider>();
+                  var message = messageObj.getRandomGreeting();
+
+                  var firstmsg = messageObj.messageObject(
+                      "bot", message, true, TimeOfDay.now().format(context));
+                  messageObj.saveMessageConversation(
                       firstmsg, widget.girlfriend.conversationID);
+
+                  // messageObj.setchatFirstMessage(message);
+
                   return const Expanded(child: SizedBox());
                 } else {
                   return Expanded(
                     child: ListView.builder(
+                      controller: context.read<ChatProvider>().scrollController,
                       padding: const EdgeInsets.all(10),
                       itemCount: data
                           .messages.length, // Use the messages from provider
@@ -119,6 +142,7 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
         children: [
           Expanded(
             child: TextField(
+              style: const TextStyle(color: white),
               controller: _messageController,
               decoration: InputDecoration(
                 fillColor: black.withOpacity(0.5),
@@ -130,11 +154,31 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               ),
+              onSubmitted: (value) {
+                FocusScope.of(context).requestFocus(FocusNode());
+                // Add the new message
+                if (_messageController.text.isNotEmpty) {
+                  var message = chatProvider.messageObject(
+                    widget.girlfriend.userName, // The sender
+                    _messageController.text, // The message content
+                    false, // Assuming it's sent by Umair (you)
+                    TimeOfDay.now().format(context), // The time
+                  );
+                  chatProvider.saveMessageConversation(
+                      message, widget.girlfriend.conversationID);
+
+                  chatProvider.askQuestion(context, _messageController.text,
+                      widget.girlfriend.conversationID, widget.girlfriend);
+                  chatProvider.scrollToBottom();
+                  _messageController.clear(); // Clear the input field
+                }
+              },
             ),
           ),
           IconButton(
             icon: const Icon(Icons.send, color: Colors.blue),
             onPressed: () {
+              FocusScope.of(context).requestFocus(FocusNode());
               // Add the new message
               if (_messageController.text.isNotEmpty) {
                 var message = chatProvider.messageObject(
@@ -145,10 +189,15 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
                 );
                 chatProvider.saveMessageConversation(
                     message, widget.girlfriend.conversationID);
-                chatProvider.askQuestion(context, _messageController.text,
-                    widget.girlfriend.conversationID);
 
+                chatProvider.askQuestion(context, _messageController.text,
+                    widget.girlfriend.conversationID, widget.girlfriend);
+                chatProvider.scrollToBottom();
                 _messageController.clear(); // Clear the input field
+              } else {
+                showToast(
+                  "Message Cannot be empty",
+                );
               }
             },
           ),
@@ -161,7 +210,7 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
     return Container(
       // height: 150,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
-      color: black.withOpacity(0.5),
+      color: black.withOpacity(0.7),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -214,6 +263,14 @@ class _ChatScreenBodyState extends State<ChatScreenBody> {
                     Text(
                       widget.girlfriend.girlFriendName,
                       style: const TextStyle(color: white, fontSize: 16),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      "online",
+                      style: TextStyle(
+                          fontSize: 10,
+                          color: green,
+                          fontWeight: FontWeight.bold),
                     ),
                     Consumer<ChatProvider>(
                       builder: (context, value, child) => Text(

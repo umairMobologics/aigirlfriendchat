@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:agora_new_updated/screen/Homepage/dashboardScreen.dart';
 import 'package:agora_new_updated/screen/Homepage/home_screen.dart';
 import 'package:agora_new_updated/utils/alert_dialogs.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
@@ -131,7 +130,7 @@ class _MultipleUserVideoState extends State<MultipleUserVideo>
             if (isFindingNext == false) {
               Navigator.of(context).pushAndRemoveUntil(
                   CupertinoPageRoute(
-                    builder: (ctx) => const DashBoardScreen(),
+                    builder: (ctx) => const MyHomePage(),
                   ),
                   (route) => false);
             } else {

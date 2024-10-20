@@ -34,7 +34,7 @@ class _AIGirlFriendState extends State<AIGirlFriend> {
       appBar: AppBar(
         backgroundColor: appBarBackground,
         title: const Text(
-          "Genesia AI",
+          "AI Friend",
           style: TextStyle(
               fontSize: 30, color: white, fontWeight: FontWeight.bold),
         ),
@@ -169,8 +169,8 @@ class MessageCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      height: 40,
-                      width: 40,
+                      height: 60,
+                      width: 60,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
@@ -186,21 +186,17 @@ class MessageCard extends StatelessWidget {
                       children: [
                         Text(
                           girlfriend.girlFriendName,
-                          style: const TextStyle(color: white),
+                          style: const TextStyle(color: white, fontSize: 18),
                         ),
-                        Row(
-                          children: [
-                            const Text(
-                              "Hey! What are you up to?",
-                              style: TextStyle(color: white54),
-                            ),
-                            SizedBox(width: mq.width * 0.01),
-                            const Text(
-                              ". 1h",
-                              style: TextStyle(color: white54),
-                            ),
-                          ],
-                        )
+                        SizedBox(
+                          width: mq.width * 0.7,
+                          child: const Text(
+                            "You are now connected as a friend.asgdjhasdjhs",
+                            style: TextStyle(color: white54),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(width: mq.width * 0.01)
                       ],
                     ),
                   ],
@@ -208,7 +204,7 @@ class MessageCard extends StatelessWidget {
                 const Text(
                   ".",
                   style: TextStyle(
-                      fontSize: 30, color: white, fontWeight: FontWeight.bold),
+                      fontSize: 30, color: green, fontWeight: FontWeight.bold),
                 )
               ],
             ),

@@ -6,7 +6,7 @@ import 'dart:developer';
 import 'package:agora_new_updated/provider/AdsProvider.dart';
 import 'package:agora_new_updated/screen/Authentication/auth_screen.dart';
 import 'package:agora_new_updated/screen/Authentication/emailPassword_signin_auth_provider.dart';
-import 'package:agora_new_updated/screen/Homepage/dashboardScreen.dart';
+import 'package:agora_new_updated/screen/Homepage/home_screen.dart';
 import 'package:agora_new_updated/utils/constants.dart';
 import 'package:agora_new_updated/widgets/sign_in_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -369,7 +369,7 @@ class _PasswordSigninState extends State<PasswordSignin> {
                                   navigator.pushAndRemoveUntil(
                                       CupertinoPageRoute(
                                     builder: (context) {
-                                      return const DashBoardScreen();
+                                      return const MyHomePage();
                                     },
                                   ), (route) => false);
                                 } on FirebaseAuthException catch (e) {

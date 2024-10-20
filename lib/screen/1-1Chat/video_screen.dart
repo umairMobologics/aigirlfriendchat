@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:agora_new_updated/provider/agora_credientials.dart';
-import 'package:agora_new_updated/screen/Homepage/dashboardScreen.dart';
 import 'package:agora_new_updated/screen/Homepage/home_screen.dart';
 import 'package:agora_new_updated/utils/constants.dart';
 import 'package:agora_new_updated/utils/getDeviceID.dart';
@@ -15,7 +14,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tflite/flutter_tflite.dart';
+// import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -1197,12 +1196,12 @@ class _VideoScreenState extends State<VideoScreen>
 
       navigator.pushAndRemoveUntil(CupertinoPageRoute(
         builder: (context) {
-          return const DashBoardScreen();
+          return const MyHomePage();
         },
       ), (route) => false);
     } else {
       navigator.pushAndRemoveUntil(CupertinoPageRoute(builder: (context) {
-        return const DashBoardScreen();
+        return const MyHomePage();
       }), (route) => false);
     }
   }
@@ -1243,7 +1242,7 @@ class _VideoScreenState extends State<VideoScreen>
     if (widget.nodeCreated == false) {
       navigator.pushAndRemoveUntil(CupertinoPageRoute(
         builder: (context) {
-          return const DashBoardScreen();
+          return const MyHomePage();
         },
       ), (route) => false);
     }
@@ -1518,12 +1517,12 @@ class _VideoScreenState extends State<VideoScreen>
   }
 
   loadModel() async {
-    Tflite.close();
+    // Tflite.close();
 
-    final res = (await Tflite.loadModel(
-      model: 'assets/model.tflite',
-      labels: 'assets/labels.txt',
-    ))!;
+    // final res = (await Tflite.loadModel(
+    //   model: 'assets/model.tflite',
+    //   labels: 'assets/labels.txt',
+    // ))!;
   }
 
   takeScreenShot() {
@@ -1535,20 +1534,20 @@ class _VideoScreenState extends State<VideoScreen>
   }
 
   Future imageClassification(String path) async {
-    final res = await Tflite.runModelOnImage(
-      path: path,
-      numResults: 6,
-      threshold: 0.5,
-      imageMean: 127.5,
-      imageStd: 127.5,
-    );
+    // final res = await Tflite.runModelOnImage(
+    //   path: path,
+    //   numResults: 6,
+    //   threshold: 0.5,
+    //   imageMean: 127.5,
+    //   imageStd: 127.5,
+    // );
 
-    if (res![res.length - 1]['label'] == 'sexy' ||
-        res[res.length - 1]['label'] == 'porn') {
-      Fluttertoast.showToast(
-          msg: "Nudity Detected, You will be banned next time");
-      await _engine.switchCamera();
-    }
+    // if (res![res.length - 1]['label'] == 'sexy' ||
+    //     res[res.length - 1]['label'] == 'porn') {
+    //   Fluttertoast.showToast(
+    //       msg: "Nudity Detected, You will be banned next time");
+    //   await _engine.switchCamera();
+    // }
   }
 
   Future reportUser(

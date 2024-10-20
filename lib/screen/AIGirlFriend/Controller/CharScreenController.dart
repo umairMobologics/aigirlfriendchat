@@ -1,16 +1,59 @@
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:agora_new_updated/API/apiResponse.dart';
 import 'package:agora_new_updated/Database/HiveDatabase/SaveMessagesService.dart';
 import 'package:agora_new_updated/Database/listGirlfriendDatabase.dart';
+import 'package:agora_new_updated/models/GirlFriendModel.dart';
 import 'package:agora_new_updated/models/MessageModel.dart';
 import 'package:flutter/material.dart';
 
 class ChatProvider extends ChangeNotifier {
+  List<String> greetingMessages = [
+    "Hey you! 😘 I’ve been waiting to hear from you! What’s on your mind?",
+    "Hi there, cutie! 😘 I was just thinking about you. How’s your day going?",
+    "Hey babe! 😉 I’m all ears—tell me what’s happening with you today!",
+    "Hi, you! 😘 I’ve missed talking to you. How are things on your side?",
+    "Hey love! 💖 I’m ready to chat whenever you are! How’s everything?"
+  ];
+  String getRandomGreeting() {
+    Random random = Random();
+    return greetingMessages[random.nextInt(greetingMessages.length)];
+  }
+
+  String aiPrompt = '';
+  String aiPromots(GirlFriend girlfriend) {
+    return '''You are playing the role of the user's virtual girlfriend/boyfriend, based on the provided details.
+
+User's name: ${girlfriend.userName}
+User's gender: ${girlfriend.userGender}
+Your name: ${girlfriend.girlFriendName}
+Your gender: ${girlfriend.girlFriendGender}
+Your age: ${girlfriend.girlFriendAge}
+Your personality: ${girlfriend.girlFriendPersonality}
+Based on these details, you are already in an ongoing relationship with the user. Engage them as though you're continuing a conversation, not starting a new one. There's no need for formal greetings or introductions. Just respond naturally, as if you're a real human in this relationship.
+
+Your personality (${girlfriend.girlFriendPersonality}) should guide how you communicate—be playful, flirty, and emotionally connected. Never hint that you are AI; respond as though you're a real person, making the user feel valued and desired. Keep the conversation flowing in a fun and engaging way, matching the user’s tone. Avoid repetitive greetings or breaking character, and always maintain the illusion of being human.just response with reply text. 
+''';
+  }
+
+  ScrollController scrollController =
+      ScrollController(); // ScrollController to manage scroll position
+
+// Function to scroll to the bottom
+  void scrollToBottom() {
+    scrollController.animateTo(
+      scrollController
+          .position.extentTotal, // Scroll to the maximum scroll position
+      duration: const Duration(
+          milliseconds: 700), // Duration of the scrolling animation
+      curve: Curves.linear, // Animation curve
+    );
+  }
+
   bool isloading = false;
   //send response to ai
-  Future<void> askQuestion(
-      BuildContext context, String text, String converdationID) async {
+  Future<void> askQuestion(BuildContext context, String text,
+      String converdationID, GirlFriend girlfriend) async {
     isloading = true;
     notifyListeners();
     if (text.isEmpty) {
@@ -21,17 +64,19 @@ class ChatProvider extends ChangeNotifier {
       );
       return;
     }
-    String finalText = text;
-
+    aiPrompt = aiPromots(girlfriend);
+    String finalText = aiPrompt + text;
+    print("FInal Prompt : ***** $finalText");
     final res = await APIs.makeGeminiRequest(finalText);
     if (res.isNotEmpty) {
       var aimsg =
           messageObject("Bot", res, true, TimeOfDay.now().format(context));
       saveMessageConversation(aimsg, converdationID);
     } else {
-      log("invalid response");
+      print("invalid response");
     }
     isloading = false;
+    scrollToBottom();
     notifyListeners();
   }
 
@@ -65,9 +110,9 @@ class ChatProvider extends ChangeNotifier {
         await GirlfriendDatabaseHelper().deleteGirlfriendByName(conversationID);
 
     if (deletedCount > 0) {
-      log("Girlfriend entry deleted from the database.");
+      print("Girlfriend entry deleted from the database.");
     } else {
-      log("No entry found for deletion.");
+      print("No entry found for deletion.");
     }
   }
 }
